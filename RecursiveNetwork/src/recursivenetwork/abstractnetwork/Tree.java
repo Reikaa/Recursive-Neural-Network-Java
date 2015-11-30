@@ -15,7 +15,7 @@ public class Tree {
 	private INDArray preOutput; 
 	/** gradient is non-null only for leaf nodes. Contains reference. Contains
 	 * reference to the unique gradient vector corresponding to the leaf */
-	private INDArray gradient;  
+	private SumOfGradient gradient;  
 	private final String label;
 	private final List<Tree> children;
 	private final int numChild;
@@ -47,22 +47,19 @@ public class Tree {
 		this.vector = vector;
 	}
 	
-	public INDArray getGradient() {
+	public SumOfGradient getGradient() {
 		return this.gradient;
 	}
 	
 	public void setGradient(INDArray gradient) {
-		this.gradient = gradient;
+		this.gradient = new SumOfGradient(gradient);
 	}
 	
 	/** accumulate gradient so that after a set of backprop through several trees
 	 * you can update all the leaf vectors by the sum of gradients. Don't forget to 
 	 * clear the gradients after updating. */
 	public void addGradient(INDArray gradient) {
-		this.gradient.addi(gradient);
-		double v = this.gradient.max(1).getDouble(0);
-		if(v > 0)
-			System.out.println("Gradient Size "+v);
+		this.gradient.addGradient(gradient);		
 	}
 	
 	public String getLabel() {

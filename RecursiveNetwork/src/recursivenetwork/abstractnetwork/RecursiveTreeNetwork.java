@@ -5,9 +5,13 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 /** Represents a general class of recursive networks that perform composition on every node.
  * @author Dipendra Misra (dkm@cs.cornell.edu) 
  * 
- * TODO: feed-forward and backprop through children in parallel 
- * 	     optimize the code 
- *       replace Tree by a datastructure extending tree */
+ * TODO: 1. feed-forward and backprop through children in parallel 
+ * 	     2. optimize the code 
+ *       3. replace Tree by a datastructure extending tree 
+ *       4. add an end-to-end working example 
+ *       5. generalize to Tree with arbitrary number of children
+ *       6. add Recursive Neural Tensor Network
+ */
 public abstract class RecursiveTreeNetwork 
 					  implements AbstractRecursiveTreeNetwork, AbstractEmbedding {
 	

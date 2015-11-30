@@ -45,7 +45,8 @@ public class SimpleRecursiveTreeNetwork extends RecursiveTreeNetwork {
 	
 	@Override
 	public INDArray applyNonLinearity(INDArray preOutput) {
-		INDArray nonLinear = Nd4j.getExecutioner().execAndReturn(new HardTanh(preOutput));
+		//Be careful that execAndReturn works on the same copy so duplicate the INDArray
+		INDArray nonLinear = Nd4j.getExecutioner().execAndReturn(new HardTanh(preOutput.dup()));
 		return nonLinear;
 	}
 	
@@ -56,8 +57,9 @@ public class SimpleRecursiveTreeNetwork extends RecursiveTreeNetwork {
 		 * del+ loss /del theta = error * del+ y / del theta  */
 
 		//nonLinear Derivative = [g'(Wx+b)]
+		//Be careful that execAndReturn works on the same copy so duplicate the INDArray
 		INDArray nonLinearDerivative = Nd4j.getExecutioner()
-				.execAndReturn(new HardTanhDerivative(t.getPreOutput()));
+				.execAndReturn(new HardTanhDerivative(t.getPreOutput().dup()));
 		INDArray nonLinearDerivativeTranspose = nonLinearDerivative.transpose();
 		this.nonLinearDerivativeTranspose = nonLinearDerivativeTranspose;
 		
