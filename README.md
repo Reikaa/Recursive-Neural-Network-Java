@@ -9,11 +9,14 @@ This repository contains a generic implementation of Simple Recursive Neural Net
 
 ### How do I get set up? ###
 
-* Clone the project
+* Clone the project.
+* Run the unit test `SimpleRecursiveTreeNetworkUnitTest.java`.
+
+Custom project
 * Create a list of trees and set up their leaf-vectors and 
-  initialize their gradients.
-* Iterator over the training trees and backprop the errors over any loss      
-  function of your choice. You can use loss functions in dl4j
+  initialize their gradients. See unit test to see gain insights.
+* Iterate over training trees and backprop the errors over any loss      
+  function of your choice. You can use loss functions in dl4j.
 * Make prediction on test trees using feedForward function.
 * You can use the Abstract class to define your own composition function for 
   every node. You can thus create an RNTN or each node can be a neural network 
