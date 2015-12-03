@@ -5,72 +5,46 @@ import java.util.List;
 
 import org.nd4j.linalg.api.ndarray.INDArray;
 
+import recursivenetwork.util.SumOfGradient;
+
 /** A tree structure useful with recursive network
  * @author Dipendra Misra (dkm@cs.cornell.edu) */
-public class Tree {
+public interface Tree {
 
-	/** for leaves this contains reference to a global leaf vector */
-	private INDArray vector;
-	/** INDArray before non-linearity is applied */
-	private INDArray preOutput; 
-	/** gradient is non-null only for leaf nodes. Contains reference. Contains
-	 * reference to the unique gradient vector corresponding to the leaf */
-	private SumOfGradient gradient;  
-	private final String label;
-	private final List<Tree> children;
-	private final int numChild;
+	/** Number of children for this node */
+	public int numChildren();
 	
-	public Tree(String label, List<Tree> children) {
-		this.label = label;
-		this.children = children;
-		this.numChild = children.size();
-	}
+	/** ith child of this node*/
+	public Tree getChild(int i);
 	
-	public int numChildren() {
-		return this.numChild;
-	}
+	/** iterator over children*/
+	public Iterator<Tree> getChildren();
 	
-	public Tree getChild(int i) { 
-		/* use iterator for trees with large degree */
-		return this.children.get(i);
-	}
+	/** returns encoding of the subtree rooted at this node under the current model*/
+	public INDArray getVector();
 	
-	public Iterator<Tree> getChildren() {
-		return this.children.iterator();
-	}
+	/** sets encoding of the subtree rooted at this node*/
+	public void setVector(INDArray vector);
 	
-	public INDArray getVector() {
-		return this.vector;
-	}
+	/** gets gradient for backprop through this node*/
+	public SumOfGradient getGradient();
 	
-	public void setVector(INDArray vector) {
-		this.vector = vector;
-	}
-	
-	public SumOfGradient getGradient() {
-		return this.gradient;
-	}
-	
-	public void setGradient(INDArray gradient) {
-		this.gradient = new SumOfGradient(gradient);
-	}
+	/** sets gradient for backprop through this node. Generally, null 
+	 * for all internal nodes. */
+	public void setGradient(SumOfGradient sumOfGradient);
 	
 	/** accumulate gradient so that after a set of backprop through several trees
 	 * you can update all the leaf vectors by the sum of gradients. Don't forget to 
 	 * clear the gradients after updating. */
-	public void addGradient(INDArray gradient) {
-		this.gradient.addGradient(gradient);		
-	}
+	public void addGradient(INDArray gradient);
 	
-	public String getLabel() {
-		return this.label;
-	}
+	/** label of this node*/
+	public String getLabel();
 	
-	public INDArray getPreOutput() {
-		return this.preOutput;
-	}
+	/** preOutput is the vector that after application of non-linearity gives the  
+	 * encoding of the subtree rooted at this node. */
+	public INDArray getPreOutput();
 	
-	public void setPreOutput(INDArray preOutput) {
-		this.preOutput = preOutput;
-	}
+	/** sets preOutput for this node. (see getPreOutput for details) */
+	public void setPreOutput(INDArray preOutput);
  }

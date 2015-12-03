@@ -16,14 +16,14 @@ public class SimpleRecursiveTreeNetwork extends RecursiveTreeNetwork {
 	private final INDArray W, b;
 	private final int n;
 	private final INDArray gradW, gradb;
-	private final Double learningRate;
+	private final Double learningRate, l2;
 	
 	/** a value that is saved globally for optimization purpose. This is however a bad 
 	 * programming choice and should be removed in later versions.*/
 	private INDArray nonLinearDerivativeTranspose;
 	
 	/** for a binarized tree, W is in Rnx2n and b is in Rn*/
-	public SimpleRecursiveTreeNetwork(int n, Double learningRate) {
+	public SimpleRecursiveTreeNetwork(int n, Double learningRate, Double l2) {
 		super(learningRate, true, 5.0);
 		this.n = n;
 		//do smarter initialization of W, b
@@ -32,6 +32,7 @@ public class SimpleRecursiveTreeNetwork extends RecursiveTreeNetwork {
 		this.gradW = Nd4j.zeros(n, 2*n);
 		this.gradb = Nd4j.zeros(n, 1);
 		this.learningRate = learningRate;
+		this.l2 = l2;
 		this.nonLinearDerivativeTranspose = null;
 	}
 	
@@ -76,23 +77,14 @@ public class SimpleRecursiveTreeNetwork extends RecursiveTreeNetwork {
 		INDArray rightVector = right.getVector();
 		INDArray x  = Nd4j.concat(1, leftVector, rightVector); //can be cached in future
 		
-		//TODO check x for NaNa and infinity 
+		/* TODO check x for NaNa and infinity 
+		 * Collect statistics on whether gradient is vanishing or exploding. */
 		
-		for(int row = 0; row < shape[0]; row++) {
-			
-			//compute the Jacobian matrix J(y,W_row) = [del y_s / del W_row,t = g'(Wx+b)_s x_t] 
-			INDArray nonLinearDerivRowR = nonLinearDerivativeTranspose.mmul(x);
-			INDArray lossRowR = error.mmul(nonLinearDerivRowR);
-			
-			for(int col = 0; col < shape[1]; col++) {
-				double oldVal = this.gradW.getDouble(new int[]{row, col});
-				double newVal = oldVal + lossRowR.getDouble(col);
-				this.gradW.putScalar(new int[]{row, col}, newVal);
-			}
-		}
+		INDArray errorTimesNonLinearDerivative = error.mul(nonLinearDerivative).transpose();
+		this.gradW.addi(errorTimesNonLinearDerivative.mmul(x));
 
 		//del loss / del b = error * del+ y / del b
-		this.gradb.addi(error.mul(nonLinearDerivative).transpose());
+		this.gradb.addi(errorTimesNonLinearDerivative);
 	}
 
 	@Override
@@ -111,16 +103,18 @@ public class SimpleRecursiveTreeNetwork extends RecursiveTreeNetwork {
 		
 		INDArray rightDerivative = Nd4j.zeros(this.n, this.n);
 		for(int col = this.n; col < 2*this.n; col++) {
-			rightDerivative.putColumn(col, this.nonLinearDerivativeTranspose.mul(this.W.getColumn(col)));
+			rightDerivative.putColumn(col - this.n, this.nonLinearDerivativeTranspose.mul(this.W.getColumn(col)));
 		}
 		
 		return rightDerivative;
 	}
 	
-	/** update parameters */
+	/** update parameters as: (param is W / b)
+	 *  param(t+1) = param(t) - eta {gradParam(t) + l2*param(t)} 
+	 */
 	public void updateParameters() {
-		this.W.addi(this.gradW.mul(this.learningRate));
-		this.b.addi(this.gradb.mul(this.learningRate));
+		this.W.subi(this.gradW.mul(this.learningRate).add(this.W.mul(this.l2)));
+		this.b.subi(this.gradb.mul(this.learningRate).add(this.b.mul(this.l2)));
 	}
 	
 	/** clears the gradients */
