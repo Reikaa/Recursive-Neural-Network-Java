@@ -61,12 +61,7 @@ public class SimpleRecursiveTreeNetworkUnitTest {
 			for(Pair<INDArray, SumOfGradient> vG: this.vectorAndGradients) {
 				INDArray vector = vG.first();
 				SumOfGradient gradient = vG.second();
-				int numTerms = gradient.numTerms();
-				if(numTerms == 0) {
-					continue;
-				}
-				
-				INDArray realGradient = gradient.getSumOfGradient().div((double)numTerms);
+				INDArray realGradient = gradient.getSumOfGradient();
 				realGradient.addi(vector.mul(this.l2));
 				vector.subi(realGradient.mul(this.learningRate));
 				gradient.flush();
