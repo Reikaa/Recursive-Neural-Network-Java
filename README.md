@@ -7,7 +7,7 @@ This repository contains a generic implementation of Simple Recursive Neural Net
 * Contains implementation of Simple Recursive Neural Network in java
 * Version 3.7 dl4j
 
-### How do I get set up? ###
+### How do I set up? ###
 
 * Clone the project.
 * Run the unit test `SimpleRecursiveTreeNetworkUnitTest.java`.
