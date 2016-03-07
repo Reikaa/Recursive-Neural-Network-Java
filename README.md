@@ -24,7 +24,7 @@ Custom project
 
 ### Contribution guidelines ###
 
-Add your name to the contributors list if you do the following:
+Add your name to the contributors list if you do one of the following:
 
 * If you fix errors or bug that affect accuracy or performance.
 * Add another example such as create RNTN etc.
@@ -32,7 +32,7 @@ Add your name to the contributors list if you do the following:
 
 Please send an email to the repo. owner in that case.
 
-### Who do I talk to? ###
+### Whom do I talk to? ###
 
 * **Repo owner:** Dipendra Misra, PhD student at Cornell Univ. (dkm@cs.cornell.edu)
 * **Dl4j, Nd4j contact:** Adam  Gibson, Founder Skymind
