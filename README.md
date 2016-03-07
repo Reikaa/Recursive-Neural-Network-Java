@@ -42,5 +42,5 @@ Please send an email to the repo. owner in that case.
 
 * **Repo owner:** Dipendra Misra, PhD student at Cornell Univ. (dkm@cs.cornell.edu)
 * **Dl4j, Nd4j contact:** Adam  Gibson, Founder Skymind
-  for dl4j, nd4j queries use this.
+* For dl4j, nd4j queries use this.
   https://gitter.im/deeplearning4j/deeplearning4j
