@@ -32,6 +32,12 @@ Add your name to the contributors list if you do one of the following:
 
 Please send an email to the repo. owner in that case.
 
+### Features under consideration ###
+
+* Adaptive learning rate 
+* Socher's RNTN 
+* Averaging Network for comparison with compositional models
+
 ### Whom do I talk to? ###
 
 * **Repo owner:** Dipendra Misra, PhD student at Cornell Univ. (dkm@cs.cornell.edu)
